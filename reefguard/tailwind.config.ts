@@ -29,16 +29,20 @@ const config: Config = {
           '0%': { opacity: '0', transform: 'translateY(16px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
+        'pulse-ring': {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.4' },
+        },
       },
       animation: {
-        'fade-up':         'fade-up 0.6s cubic-bezier(0.32,0.72,0,1) forwards',
-        'fade-up-d1':      'fade-up 0.6s cubic-bezier(0.32,0.72,0,1) 0.08s forwards',
-        'fade-up-d2':      'fade-up 0.6s cubic-bezier(0.32,0.72,0,1) 0.16s forwards',
-        'fade-up-d3':      'fade-up 0.6s cubic-bezier(0.32,0.72,0,1) 0.24s forwards',
+        'fade-up': 'fade-up 0.6s cubic-bezier(0.32,0.72,0,1) forwards',
+        'fade-up-delay': 'fade-up 0.6s cubic-bezier(0.32,0.72,0,1) 0.1s forwards',
+        'fade-up-delay-2': 'fade-up 0.6s cubic-bezier(0.32,0.72,0,1) 0.2s forwards',
+        'fade-up-delay-3': 'fade-up 0.6s cubic-bezier(0.32,0.72,0,1) 0.3s forwards',
+        'pulse-ring': 'pulse-ring 2s ease-in-out infinite',
       },
     },
   },
   plugins: [],
 };
-
 export default config;

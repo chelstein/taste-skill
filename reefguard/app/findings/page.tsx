@@ -15,48 +15,47 @@ export default async function FindingsPage() {
     });
   } catch {}
 
+  const bySeverity = ['critical', 'high', 'medium', 'low'];
+
   return (
     <div className="px-8 py-10 max-w-[1400px] mx-auto">
       <div className="mb-10 animate-fade-up opacity-0">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 mb-4">
-          <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
           <span className="text-[10px] uppercase tracking-[0.2em] text-red-400 font-medium">Action Required</span>
         </div>
         <h1 className="text-3xl font-semibold text-white tracking-tight">Open Findings</h1>
-        <p className="text-white/35 mt-1.5 text-sm">{findings.length} finding{findings.length !== 1 ? 's' : ''} requiring remediation</p>
+        <p className="text-white/40 mt-1.5 text-sm">{findings.length} finding{findings.length !== 1 ? 's' : ''} requiring remediation</p>
       </div>
 
-      <div className="animate-fade-up-d1 opacity-0">
+      <div className="animate-fade-up-delay opacity-0">
         <GlassCard padding={false}>
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/[0.04]">
+              <tr className="border-b border-white/[0.05]">
                 {['Severity', 'Finding', 'Domain', 'Customer', 'Category'].map(h => (
-                  <th key={h} className="px-5 py-3 text-left text-[10px] uppercase tracking-[0.12em] text-white/20 font-medium">{h}</th>
+                  <th key={h} className="px-5 py-3 text-left text-[10px] uppercase tracking-[0.12em] text-white/25 font-medium">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {findings.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="px-5 py-16 text-center text-white/20 text-sm">No open findings</td>
-                </tr>
+                <tr><td colSpan={5} className="px-5 py-16 text-center text-white/20 text-sm">No open findings</td></tr>
               )}
               {findings.map((f: any) => (
-                <tr key={f.id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors duration-200">
+                <tr key={f.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors duration-200">
                   <td className="px-5 py-4"><SeverityBadge severity={f.severity} /></td>
                   <td className="px-5 py-4">
                     <div className="text-sm text-white font-medium">{f.title}</div>
-                    <div className="text-xs text-white/25 mt-0.5 line-clamp-1">{f.description}</div>
+                    <div className="text-xs text-white/30 mt-0.5 line-clamp-1">{f.description}</div>
                   </td>
                   <td className="px-5 py-4">
-                    <Link href={`/domains/${f.domain.id}`} className="text-[#14b8a6]/70 hover:text-[#14b8a6] font-mono text-xs transition-colors">
+                    <Link href={`/domains/${f.domain.id}`} className="text-reef-teal/80 hover:text-reef-teal font-mono text-xs transition-colors">
                       {f.domain.fqdn}
                     </Link>
                   </td>
-                  <td className="px-5 py-4 text-white/35 text-xs">{f.domain.customer.name}</td>
+                  <td className="px-5 py-4 text-white/40 text-xs">{f.domain.customer.name}</td>
                   <td className="px-5 py-4">
-                    <span className="font-mono text-[10px] text-white/20 bg-white/[0.04] border border-white/[0.06] px-2 py-0.5 rounded">{f.category}</span>
+                    <span className="font-mono text-[10px] text-white/25 bg-white/[0.04] px-2 py-0.5 rounded">{f.category}</span>
                   </td>
                 </tr>
               ))}

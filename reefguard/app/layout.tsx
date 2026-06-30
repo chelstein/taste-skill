@@ -12,13 +12,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className="dark">
       <body className="bg-[#050505] text-slate-100 antialiased">
         <div className="flex min-h-screen relative">
-          {/* Background glows — fixed so they don't scroll */}
-          <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-            <div className="absolute -top-32 -left-32 w-[600px] h-[500px] rounded-full bg-[#14b8a6]/[0.04] blur-[140px]" />
-            <div className="absolute bottom-0 -right-32 w-[500px] h-[400px] rounded-full bg-[#06b6d4]/[0.035] blur-[120px]" />
+          <div className="fixed inset-0 pointer-events-none z-0">
+            <div className="absolute top-0 left-0 w-[600px] h-[400px] bg-reef-teal/[0.04] blur-[120px] rounded-full" />
+            <div className="absolute bottom-0 right-0 w-[500px] h-[400px] bg-reef-cyan/[0.03] blur-[100px] rounded-full" />
           </div>
           <Sidebar />
-          <main className="flex-1 overflow-auto relative z-10">
+          <main className="flex-1 overflow-auto relative z-10 min-h-screen">
             {children}
           </main>
         </div>
