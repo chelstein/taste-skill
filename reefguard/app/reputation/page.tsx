@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { Card } from '@/components/ui/Card';
+import { GlassCard } from '@/components/ui/GlassCard';
 import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
@@ -13,42 +13,57 @@ export default async function ReputationPage() {
     });
   } catch {}
 
+  const listedCount = checks.filter(c => c.listed).length;
+
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold text-white mb-6">Reputation</h1>
-      <Card className="p-0 overflow-hidden">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-ocean-700 text-ocean-100/50 text-xs uppercase tracking-wider">
-              <th className="px-6 py-3 text-left">Domain</th>
-              <th className="px-6 py-3 text-left">Source</th>
-              <th className="px-6 py-3 text-left">Status</th>
-              <th className="px-6 py-3 text-left">Detail</th>
-              <th className="px-6 py-3 text-left">Checked</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-ocean-700">
-            {checks.length === 0 && (
-              <tr><td colSpan={5} className="px-6 py-12 text-center text-ocean-100/40">No reputation checks yet. Trigger a scan.</td></tr>
-            )}
-            {checks.map((c: any) => (
-              <tr key={c.id} className="hover:bg-ocean-700/40">
-                <td className="px-6 py-4">
-                  <Link href={`/domains/${c.domain.id}`} className="text-reef-teal hover:underline font-mono text-xs">{c.domain.fqdn}</Link>
-                </td>
-                <td className="px-6 py-4 text-ocean-100/80">{c.source}</td>
-                <td className="px-6 py-4">
-                  <span className={c.listed ? 'text-red-400 font-bold' : 'text-emerald-400'}>
-                    {c.listed ? 'LISTED' : 'Clean'}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-ocean-100/50 text-xs">{c.detail}</td>
-                <td className="px-6 py-4 text-ocean-100/40 text-xs">{new Date(c.checkedAt).toLocaleString()}</td>
+    <div className="px-8 py-10 max-w-[1400px] mx-auto">
+      <div className="mb-10 animate-fade-up opacity-0">
+        <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border mb-4 ${listedCount > 0 ? 'bg-red-500/10 border-red-500/20' : 'bg-white/[0.04] border-white/[0.07]'}`}>
+          <span className={`text-[10px] uppercase tracking-[0.2em] font-medium ${listedCount > 0 ? 'text-red-400' : 'text-white/35'}`}>
+            {listedCount > 0 ? `${listedCount} Listing${listedCount !== 1 ? 's' : ''}` : 'Reputation Clean'}
+          </span>
+        </div>
+        <h1 className="text-3xl font-semibold text-white tracking-tight">Reputation</h1>
+        <p className="text-white/35 mt-1.5 text-sm">Blacklist and threat intelligence checks across {checks.length} entries</p>
+      </div>
+
+      <div className="animate-fade-up-d1 opacity-0">
+        <GlassCard padding={false}>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-white/[0.04]">
+                {['Domain', 'Source', 'Status', 'Detail', 'Checked'].map(h => (
+                  <th key={h} className="px-5 py-3 text-left text-[10px] uppercase tracking-[0.12em] text-white/20 font-medium">{h}</th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </Card>
+            </thead>
+            <tbody>
+              {checks.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-5 py-16 text-center text-white/20 text-sm">No reputation checks yet — trigger a scan</td>
+                </tr>
+              )}
+              {checks.map((c: any) => (
+                <tr key={c.id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors duration-200">
+                  <td className="px-5 py-4">
+                    <Link href={`/domains/${c.domain.id}`} className="text-[#14b8a6]/70 hover:text-[#14b8a6] font-mono text-xs transition-colors">
+                      {c.domain.fqdn}
+                    </Link>
+                  </td>
+                  <td className="px-5 py-4 text-white/50 text-xs">{c.source}</td>
+                  <td className="px-5 py-4">
+                    <span className={`text-xs font-semibold ${c.listed ? 'text-red-400' : 'text-emerald-400/60'}`}>
+                      {c.listed ? 'LISTED' : 'Clean'}
+                    </span>
+                  </td>
+                  <td className="px-5 py-4 text-white/25 text-xs">{c.detail}</td>
+                  <td className="px-5 py-4 text-white/20 text-xs font-mono">{new Date(c.checkedAt).toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </GlassCard>
+      </div>
     </div>
   );
 }

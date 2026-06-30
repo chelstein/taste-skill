@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { Card } from '@/components/ui/Card';
+import { GlassCard } from '@/components/ui/GlassCard';
 import { SeverityBadge } from '@/components/ui/Badge';
 import Link from 'next/link';
 
@@ -11,42 +11,59 @@ export default async function FindingsPage() {
     findings = await prisma.finding.findMany({
       where: { status: 'open' },
       include: { domain: { include: { customer: true } } },
-      orderBy: { severity: 'asc' },
+      orderBy: [{ severity: 'asc' }, { createdAt: 'desc' }],
     });
   } catch {}
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold text-white mb-6">Open Findings</h1>
-      <Card className="p-0 overflow-hidden">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-ocean-700 text-ocean-100/50 text-xs uppercase tracking-wider">
-              <th className="px-6 py-3 text-left">Severity</th>
-              <th className="px-6 py-3 text-left">Title</th>
-              <th className="px-6 py-3 text-left">Domain</th>
-              <th className="px-6 py-3 text-left">Customer</th>
-              <th className="px-6 py-3 text-left">Category</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-ocean-700">
-            {findings.length === 0 && (
-              <tr><td colSpan={5} className="px-6 py-12 text-center text-ocean-100/40">No open findings.</td></tr>
-            )}
-            {findings.map((f: any) => (
-              <tr key={f.id} className="hover:bg-ocean-700/40">
-                <td className="px-6 py-4"><SeverityBadge severity={f.severity} /></td>
-                <td className="px-6 py-4 text-white">{f.title}</td>
-                <td className="px-6 py-4">
-                  <Link href={`/domains/${f.domain.id}`} className="text-reef-teal hover:underline font-mono text-xs">{f.domain.fqdn}</Link>
-                </td>
-                <td className="px-6 py-4 text-ocean-100/70">{f.domain.customer.name}</td>
-                <td className="px-6 py-4 text-ocean-100/50 font-mono text-xs">{f.category}</td>
+    <div className="px-8 py-10 max-w-[1400px] mx-auto">
+      <div className="mb-10 animate-fade-up opacity-0">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 mb-4">
+          <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
+          <span className="text-[10px] uppercase tracking-[0.2em] text-red-400 font-medium">Action Required</span>
+        </div>
+        <h1 className="text-3xl font-semibold text-white tracking-tight">Open Findings</h1>
+        <p className="text-white/35 mt-1.5 text-sm">{findings.length} finding{findings.length !== 1 ? 's' : ''} requiring remediation</p>
+      </div>
+
+      <div className="animate-fade-up-d1 opacity-0">
+        <GlassCard padding={false}>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-white/[0.04]">
+                {['Severity', 'Finding', 'Domain', 'Customer', 'Category'].map(h => (
+                  <th key={h} className="px-5 py-3 text-left text-[10px] uppercase tracking-[0.12em] text-white/20 font-medium">{h}</th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </Card>
+            </thead>
+            <tbody>
+              {findings.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-5 py-16 text-center text-white/20 text-sm">No open findings</td>
+                </tr>
+              )}
+              {findings.map((f: any) => (
+                <tr key={f.id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors duration-200">
+                  <td className="px-5 py-4"><SeverityBadge severity={f.severity} /></td>
+                  <td className="px-5 py-4">
+                    <div className="text-sm text-white font-medium">{f.title}</div>
+                    <div className="text-xs text-white/25 mt-0.5 line-clamp-1">{f.description}</div>
+                  </td>
+                  <td className="px-5 py-4">
+                    <Link href={`/domains/${f.domain.id}`} className="text-[#14b8a6]/70 hover:text-[#14b8a6] font-mono text-xs transition-colors">
+                      {f.domain.fqdn}
+                    </Link>
+                  </td>
+                  <td className="px-5 py-4 text-white/35 text-xs">{f.domain.customer.name}</td>
+                  <td className="px-5 py-4">
+                    <span className="font-mono text-[10px] text-white/20 bg-white/[0.04] border border-white/[0.06] px-2 py-0.5 rounded">{f.category}</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </GlassCard>
+      </div>
     </div>
   );
 }
